@@ -13,7 +13,7 @@
             theme: {
                 extend: {
                     colors: {
-                        'green-900': '#0a3a20', 'green-800': '#0d4a29', 'green-700': '#106b33',
+                        'green-900': '#0a3a20', 'green-800': '#0d4a29', 'green-700': '#106b33', 'green-050': '#eef6ee',
                         'gold-500': '#c99a2c', 'gold-400': '#e3b944',
                         'paper': '#faf6ec', 'paper-dim': '#f2ecdc',
                         'ink-900': '#1c2117', 'ink-700': '#3c4536', 'ink-500': '#6b7362', 'line': '#dcd3ba',
@@ -29,7 +29,7 @@
     </style>
 </head>
 <body class="pb-20">
-    <nav class="bg-green-900 text-paper shadow-lg border-b-2 border-gold-500">
+    <nav class="bg-green-900 text-paper shadow-lg border-b-2 border-gold-500 sticky top-0 z-40">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <h1 class="text-lg font-heading font-semibold">📝 ISI JURNAL & ABSENSI</h1>
             <a href="/guru" class="text-sm bg-paper-dim hover:bg-paper text-ink-900 px-4 py-2 rounded-sm transition border border-line font-bold">← Kembali</a>
@@ -64,7 +64,6 @@
                         </div>
                     </div>
                     
-                    <!-- Upload Foto KBM -->
                     <div class="bg-green-050 p-4 rounded-sm border border-green-700">
                         <label class="block text-green-900 text-sm font-bold mb-2">📸 Foto KBM (Wajib)</label>
                         @if(isset($jurnal) && $jurnal->lampiran_url)
@@ -73,7 +72,6 @@
                         <input type="file" name="foto" accept="image/*" capture="environment" class="w-full text-sm text-ink-700 file:mr-4 file:py-2 file:px-4 file:rounded-sm file:border-0 file:text-sm file:font-bold file:bg-gold-500 file:text-green-900 hover:file:bg-gold-400">
                         <p class="text-xs text-ink-500 mt-2">💡 Tips: Kosongkan jika tidak ingin mengganti foto sebelumnya. Di HP, ini akan langsung membuka kamera.</p>
                         
-                        <!-- PERBAIKAN DI SINI: Menambahkan pengecekan isset($jurnal) agar tidak error saat pertama kali buka -->
                         <div id="gps_status" class="text-xs text-ink-500 mt-1">📍 {{ (isset($jurnal) && $jurnal->lokasi_gps) ? 'Lokasi Tersimpan: ' . substr($jurnal->lokasi_gps, 0, 15) . '...' : 'Sedang mencari lokasi GPS...' }}</div>
                         <input type="hidden" name="lokasi_gps" id="lokasi_gps" value="{{ $jurnal->lokasi_gps ?? '' }}">
                     </div>
@@ -128,7 +126,7 @@
             </div>
 
             <!-- Tombol Simpan -->
-            <div class="flex justify-end space-x-3 sticky bottom-4">
+            <div class="flex justify-end space-x-3 sticky bottom-4 bg-paper py-2">
                 <button type="button" onclick="location.reload();" class="bg-paper-dim hover:bg-paper text-ink-700 font-bold py-3 px-6 rounded-sm transition border border-line">Reset</button>
                 <button type="button" onclick="showVerificationModal()" class="bg-gold-500 hover:bg-gold-400 text-green-900 font-bold py-3 px-8 rounded-sm shadow-lg transition transform hover:-translate-y-1 border border-gold-600">
                     💾 Verifikasi & Simpan
@@ -136,6 +134,49 @@
             </div>
         </form>
     </div>
+
+    <!-- 🔴 MODAL PERINGATAN 7 KAIH (AUTO-OPEN) - VERSI LENGKAP 🔴 -->
+    @if(count($siswaTidakHadir7Kaih) > 0)
+    <div id="modalPeringatan7Kaih" class="fixed inset-0 bg-green-900 bg-opacity-80 hidden flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div class="bg-paper rounded-sm shadow-2xl w-full max-w-2xl overflow-hidden border-2 border-red-500">
+            <div class="bg-red-500 p-4 text-white font-heading font-bold text-lg flex items-center justify-center border-b-2 border-red-600">
+                ⚠️ PERINGATAN: SISWA TIDAK IKUT KEGIATAN PAGI ({{ $hariIni }})
+            </div>
+            <div class="p-6 max-h-[70vh] overflow-y-auto">
+                <p class="text-sm text-ink-700 mb-4 font-bold">
+                    Berikut siswa di kelas ini yang <span class="text-red-600">TIDAK HADIR / BELUM DIABSEN</span> pada kegiatan pagi hari ini:
+                </p>
+                <div class="space-y-2 mb-4">
+                    @foreach($siswaTidakHadir7Kaih as $siswa)
+                        <div class="flex items-center justify-between bg-red-50 p-3 rounded-sm border border-red-200">
+                            <div class="flex items-center space-x-3">
+                                <span class="font-bold text-ink-900">{{ $siswa['nama'] }}</span>
+                                <span class="text-xs bg-green-900 text-paper px-2 py-1 rounded-sm font-bold">
+                                    {{ strtoupper($siswa['kegiatan']) }}
+                                </span>
+                            </div>
+                            <span class="text-xs font-bold px-3 py-1 rounded-sm 
+                                {{ $siswa['status'] === 'Alpha' ? 'bg-red-200 text-red-800' : 
+                                   ($siswa['status'] === 'Sakit' ? 'bg-yellow-200 text-yellow-800' : 
+                                   ($siswa['status'] === 'Izin' ? 'bg-blue-200 text-blue-800' : 
+                                   'bg-gray-200 text-gray-800')) }}">
+                                {{ $siswa['status'] }}
+                            </span>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="bg-green-050 p-4 rounded-sm border border-green-700 text-sm text-green-900">
+                    💡 <strong>Catatan:</strong> Anda tetap dapat mengisi absensi jurnal seperti biasa. Jika siswa yang tercatat tidak hadir ternyata datang terlambat ke kelas, silakan ubah statusnya menjadi "Hadir" atau "Terlambat" dan tegur siswa tersebut secara langsung.
+                </div>
+            </div>
+            <div class="bg-paper-dim p-4 flex justify-end border-t border-line">
+                <button onclick="document.getElementById('modalPeringatan7Kaih').classList.add('hidden')" class="px-6 py-3 bg-green-700 text-white rounded-sm hover:bg-green-800 font-bold shadow-md transition">
+                    ✅ Mengerti, Lanjutkan Isi Jurnal
+                </button>
+            </div>
+        </div>
+    </div>
+    @endif
 
     <!-- MODAL VERIFIKASI -->
     <div id="modalVerifikasi" class="fixed inset-0 bg-green-900 bg-opacity-70 hidden flex items-center justify-center z-50 p-4">
@@ -175,6 +216,15 @@
     </div>
 
     <script>
+        // 🔴 AUTO-OPEN MODAL PERINGATAN 7 KAIH 🔴
+        @if(count($siswaTidakHadir7Kaih) > 0)
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                document.getElementById('modalPeringatan7Kaih').classList.remove('hidden');
+            }, 500);
+        });
+        @endif
+
         // 1. Logic GPS Browser
         const existingGps = document.getElementById('lokasi_gps').value;
         if (!existingGps && navigator.geolocation) {

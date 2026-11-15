@@ -1,18 +1,18 @@
 <?php
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Rombel;
 
 class LoginController extends Controller
 {
-    // Menampilkan halaman login
     public function showLoginForm() {
         return view('auth.login');
     }
 
-    // Memproses login
     public function login(Request $request) {
         $credentials = $request->validate([
             'email' => ['required', 'email'],
@@ -21,21 +21,32 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
-            // Cek role user untuk mengarahkan ke dashboard yang sesuai
             $user = Auth::user();
-            if (in_array($user->role, ['admin', 'kepsek', 'wakasek'])) {
-                return redirect()->intended('dashboard');
+
+            // 1. HANYA Admin & Kepala Sekolah yang masuk ke Dashboard Monitoring
+            if ($user->role === 'admin' || $user->role === 'kepsek') {
+                return redirect()->route('dashboard');
             }
+
+            // 2. 🔴 CEK: Apakah user ini adalah Wali Kelas? 🔴
+            $isWaliKelas = Rombel::where('wali_kelas_id', $user->id)->exists();
             
-            // Jika role-nya guru, pembina, atau lainnya, arahkan ke halaman guru
-            return redirect()->intended('guru');
+            if ($isWaliKelas) {
+                return redirect('/wali-kelas'); // Arahkan ke Dashboard Wali Kelas
+            }
+
+            // 3. Wali Murid masuk ke portal wali
+            if ($user->role === 'wali_murid') {
+                return redirect('/wali');
+            }
+
+            // 4. Default untuk Guru Mapel biasa (yang bukan Wali Kelas)
+            return redirect('/guru');
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah.']);
+        return back()->withErrors(['email' => 'Email atau password salah.'])->withInput();
     }
 
-    // Memproses logout
     public function logout(Request $request) {
         Auth::logout();
         $request->session()->invalidate();

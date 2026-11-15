@@ -33,3 +33,7 @@ Route::get('/wali', [App\Http\Controllers\WaliController::class, 'index'])->midd
 Route::get('/absensi-pagi', [App\Http\Controllers\AbsensiPagiController::class, 'index'])->middleware('auth')->name('absensi.pagi');
 Route::get('/absensi-pagi/form/{tipe}', [App\Http\Controllers\AbsensiPagiController::class, 'form'])->middleware('auth')->name('absensi.pagi.form');
 Route::post('/absensi-pagi/simpan', [App\Http\Controllers\AbsensiPagiController::class, 'store'])->middleware('auth')->name('absensi.pagi.store');
+// Route untuk Dashboard Wali Kelas
+Route::get('/wali-kelas', [App\Http\Controllers\WaliKelasController::class, 'index'])
+    ->name('wali_kelas.dashboard')
+    ->middleware('auth');

@@ -27,7 +27,6 @@
     <nav class="bg-green-900 text-paper shadow-lg border-b-2 border-gold-500">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-3">
-                <img src="/images/logo.png" alt="Logo" class="w-10 h-10 object-contain bg-paper rounded-full p-1" onerror="this.style.display='none'">
                 <div>
                     <h1 class="text-lg font-heading font-semibold">DASHBOARD GURU</h1>
                     <p class="text-xs text-gold-400 font-heading italic">SMP Takhassus Al-Qur'an 2</p>
@@ -53,104 +52,63 @@
         </div>
 
         {{-- NOTIFIKASI TUGAS PAGI --}}
-        @php
-            $user = auth()->user();
-            $hariIni = \Carbon\Carbon::now()->locale('id')->dayName;
-            $isPiket = \App\Models\JadwalPiket::where('hari', $hariIni)->where('guru_id', $user->id)->exists();
-            $isBtq = \App\Models\KelompokBtq::where('pembina_id', $user->id)->exists();
-            $isTahfidz = str_contains($user->nama, 'Miftahul');
-            $adaTugas = $isPiket || $isBtq || $isTahfidz;
-        @endphp
-
-        @if($adaTugas)
-        <div class="bg-green-050 border-l-4 border-green-700 p-5 mb-6 rounded-sm shadow border border-line flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>
-                <h3 class="font-heading font-bold text-green-900 text-lg">📋 Anda Memiliki Tugas Pagi Hari Ini!</h3>
-                <p class="text-sm text-green-800 mt-1">
-                    @if($isPiket) <span class="font-bold">🚩 Guru Piket</span> • @endif
-                    @if($isBtq) <span class="font-bold">📖 Pembina BTQ</span> • @endif
-                    @if($isTahfidz) <span class="font-bold">🕌 Pembina Tahfidz</span> • @endif
-                    <span class="italic">Silakan lakukan absensi kegiatan pagi (Jam 0).</span>
-                </p>
+        @if(isset($tasks) && count($tasks) > 0)
+        <div class="bg-green-050 border-l-4 border-green-700 p-5 mb-6 rounded-sm shadow border border-line">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div>
+                    <h3 class="font-heading font-bold text-green-900 text-lg">📋 Anda Memiliki Tugas Pagi Hari Ini!</h3>
+                    <p class="text-sm text-green-800 mt-1">
+                        @foreach($tasks as $task)
+                            <span class="font-bold">{{ $task['icon'] }} {{ $task['judul'] }}</span>
+                            @if(!$loop->last) • @endif
+                        @endforeach
+                    </p>
+                </div>
+                <a href="/absensi-pagi" class="bg-gold-500 hover:bg-gold-400 text-green-900 font-bold py-2 px-6 rounded-sm transition shadow-sm border border-gold-600 whitespace-nowrap">
+                     Buka Absensi Pagi
+                </a>
             </div>
-            <a href="/absensi-pagi" class="bg-gold-500 hover:bg-gold-400 text-green-900 font-bold py-2 px-6 rounded-sm transition shadow-sm border border-gold-600 whitespace-nowrap">
-                🕌 Buka Absensi Pagi
-            </a>
         </div>
         @endif
 
-        {{-- TAMPILAN BERDASARKAN ROLE --}}
-        @if(auth()->user()->role === 'guru_tahfidz')
-            @php $adaTahfidz = in_array($hariIni, ['Rabu', 'Kamis', 'Jumat']); @endphp
-
-            @if($adaTahfidz)
-                <div class="bg-paper rounded-sm shadow-md p-8 border border-line text-center">
-                    <div class="text-6xl mb-4">🕌</div>
-                    <h3 class="text-2xl font-heading font-semibold text-ink-900 mb-2">Hari Ini Ada Program Tahfidz!</h3>
-                    <p class="text-ink-500 mb-6">Sebagai Pembina Program Tahfidz, silakan absen 20 peserta Tahfidz untuk kegiatan hari {{ $hariIni }}.</p>
-                    
-                    <div class="bg-green-050 p-4 rounded-sm border border-green-700 mb-6 text-left max-w-md mx-auto">
-                        <p class="text-sm text-green-900 font-bold mb-2">📋 Jadwal Program Tahfidz:</p>
-                        <ul class="text-sm text-ink-700 space-y-1">
-                            <li>✅ <strong>Rabu:</strong> Program Tahfidz (Jam 0-1)</li>
-                            <li>✅ <strong>Kamis:</strong> Program Tahfidz (Jam 0-1)</li>
-                            <li>✅ <strong>Jumat:</strong> Program Tahfidz (Jam 0-1)</li>
-                        </ul>
+        {{-- TAMPILAN JADWAL --}}
+        @if(isset($jadwalHariIni) && $jadwalHariIni->isNotEmpty())
+            <div class="bg-paper rounded-sm shadow-md overflow-hidden border border-line">
+                <div class="bg-paper-dim px-6 py-4 border-b-2 border-gold-500">
+                    <h3 class="text-lg font-heading font-semibold text-ink-900">📅 Jadwal Mengajar Hari Ini ({{ $hariIni }})</h3>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6">
+                    @foreach($jadwalHariIni as $jadwal)
+                    <div class="bg-paper-dim rounded-sm p-4 border border-line hover:shadow-md transition">
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="bg-green-900 text-paper text-xs px-2 py-1 rounded-sm font-bold">Jam ke-{{ $jadwal->jam_ke }}</span>
+                            <span class="text-xs text-ink-500">{{ substr($jadwal->waktu_mulai, 0, 5) }}</span>
+                        </div>
+                        <h4 class="font-heading font-bold text-ink-900 mb-1">{{ $jadwal->mapel->nama ?? 'Kokurikuler' }}</h4>
+                        <p class="text-sm text-ink-500 mb-4">Kelas: {{ $jadwal->rombel->kode ?? '-' }}</p>
+                        
+                        @if($jadwal->sudah_ceklok)
+                            <a href="/guru/jurnal/{{ $jadwal->ceklok_id }}" class="block w-full bg-green-700 hover:bg-green-800 text-white text-center py-2 rounded-sm text-sm font-bold transition">
+                                📝 Lanjutkan Jurnal
+                            </a>
+                        @else
+                            <form method="POST" action="/guru/ceklok/{{ $jadwal->id }}">
+                                @csrf
+                                <button type="submit" class="block w-full bg-gold-500 hover:bg-gold-400 text-green-900 py-2 rounded-sm text-sm font-bold transition">
+                                    🎥 Mulai Kelas
+                                </button>
+                            </form>
+                        @endif
                     </div>
-                    
-                    <a href="/absensi-pagi" class="inline-block bg-gold-500 hover:bg-gold-400 text-green-900 font-bold py-3 px-8 rounded-sm shadow-lg transition transform hover:-translate-y-1 border border-gold-600">
-                        🕌 Mulai Absensi Tahfidz
-                    </a>
+                    @endforeach
                 </div>
-            @else
-                <div class="bg-paper rounded-sm shadow-md p-8 border border-line text-center">
-                    <div class="text-6xl mb-4">☕</div>
-                    <h3 class="text-2xl font-heading font-semibold text-ink-900 mb-2">Tidak Ada Kegiatan Tahfidz Hari Ini</h3>
-                    <p class="text-ink-500">Program Tahfidz dilaksanakan pada hari <strong>Rabu, Kamis, dan Jumat</strong>.<br>Silakan istirahat atau mempersiapkan materi untuk besok.</p>
-                </div>
-            @endif
-
+            </div>
         @else
-            {{-- TAMPILAN UNTUK GURU MAPEL --}}
-            @if(isset($jadwals) && $jadwals->isNotEmpty())
-                <div class="bg-paper rounded-sm shadow-md overflow-hidden border border-line">
-                    <div class="bg-paper-dim px-6 py-4 border-b-2 border-gold-500">
-                        <h3 class="text-lg font-heading font-semibold text-ink-900">📅 Jadwal Mengajar Hari Ini</h3>
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full">
-                            <thead>
-                                <tr class="bg-green-900 text-paper text-xs uppercase">
-                                    <th class="py-3 px-6 text-left font-heading">Jam</th>
-                                    <th class="py-3 px-6 text-left font-heading">Kelas</th>
-                                    <th class="py-3 px-6 text-left font-heading">Mata Pelajaran</th>
-                                    <th class="py-3 px-6 text-center font-heading">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-ink-700 text-sm">
-                                @foreach($jadwals as $jadwal)
-                                <tr class="border-b border-line hover:bg-green-050 transition">
-                                    <td class="py-4 px-6 font-bold text-ink-900">{{ substr($jadwal->waktu_mulai, 0, 5) }} - {{ substr($jadwal->waktu_selesai, 0, 5) }}</td>
-                                    <td class="py-4 px-6">{{ $jadwal->rombel->kode ?? '-' }}</td>
-                                    <td class="py-4 px-6">{{ $jadwal->mapel->nama ?? 'Kokurikuler' }}</td>
-                                    <td class="py-4 px-6 text-center">
-                                        <a href="/guru/jurnal/{{ $jadwal->id }}" class="inline-block bg-green-700 hover:bg-green-800 text-white py-2 px-4 rounded-sm text-xs font-bold transition shadow-sm">
-                                            🎥 Mulai Kelas
-                                        </a>
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            @else
-                <div class="bg-paper rounded-sm shadow-md p-8 border border-line text-center">
-                    <div class="text-6xl mb-4">☕</div>
-                    <h3 class="text-2xl font-heading font-semibold text-ink-900 mb-2">Tidak ada jadwal mengajar hari ini.</h3>
-                    <p class="text-ink-500">Silakan istirahat atau mempersiapkan materi untuk esok hari.</p>
-                </div>
-            @endif
+            <div class="bg-paper rounded-sm shadow-md p-8 border border-line text-center">
+                <div class="text-6xl mb-4">☕</div>
+                <h3 class="text-2xl font-heading font-semibold text-ink-900 mb-2">Tidak ada jadwal mengajar hari ini.</h3>
+                <p class="text-ink-500">Silakan istirahat atau mempersiapkan materi untuk esok hari.</p>
+            </div>
         @endif
     </div>
 </body>

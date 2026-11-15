@@ -2,24 +2,31 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-// PERUBAHAN DI SINI: Ganti 'name' menjadi 'nama', dan tambahkan 'role' serta 'no_hp'
-#[Fillable(['nama', 'email', 'password', 'role', 'no_hp'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    protected $table = 'users';
+
+    // 🔴 KOLOM YANG BISA DIISI MASSAL (SUDAH TERMASUK 'jabatan') 🔴
+    protected $fillable = [
+        'nama',
+        'email',
+        'password',
+        'role',
+        'jabatan',
+        'no_hp',
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
     protected function casts(): array
     {
         return [
@@ -27,8 +34,21 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-        // Tambahkan method ini di dalam class User
-    public function siswas() {
-        return $this->belongsToMany(Siswa::class, 'user_siswa')->withPivot('hubungan');
+
+    // --- RELASI DATABASE ---
+
+    // Relasi ke Jadwal Piket
+    public function jadwalPikets() {
+        return $this->hasMany(JadwalPiket::class, 'guru_id');
+    }
+
+    // Relasi ke Kelompok BTQ (Sebagai Pembina)
+    public function kelompokBtqs() {
+        return $this->hasMany(KelompokBtq::class, 'pembina_id');
+    }
+
+    // Relasi ke Ceklok (Absensi Guru)
+    public function cekloks() {
+        return $this->hasMany(Ceklok::class, 'guru_id');
     }
 }
