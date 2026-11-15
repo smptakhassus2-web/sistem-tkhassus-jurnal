@@ -59,3 +59,10 @@ Route::post('/admin/rombel', [App\Http\Controllers\AdminRombelController::class,
 Route::get('/admin/rombel/{id}/edit', [App\Http\Controllers\AdminRombelController::class, 'edit'])->name('admin.rombel.edit');
 Route::put('/admin/rombel/{id}', [App\Http\Controllers\AdminRombelController::class, 'update'])->name('admin.rombel.update');
 Route::delete('/admin/rombel/{id}', [App\Http\Controllers\AdminRombelController::class, 'destroy'])->name('admin.rombel.destroy');
+// --- ROUTE MANAJEMEN MATA PELAJARAN (ADMIN) ---
+Route::get('/admin/mapel', [App\Http\Controllers\AdminMapelController::class, 'index'])->name('admin.mapel.index');
+Route::get('/admin/mapel/create', [App\Http\Controllers\AdminMapelController::class, 'create'])->name('admin.mapel.create');
+Route::post('/admin/mapel', [App\Http\Controllers\AdminMapelController::class, 'store'])->name('admin.mapel.store');
+Route::get('/admin/mapel/{id}/edit', [App\Http\Controllers\AdminMapelController::class, 'edit'])->name('admin.mapel.edit');
+Route::put('/admin/mapel/{id}', [App\Http\Controllers\AdminMapelController::class, 'update'])->name('admin.mapel.update');
+Route::delete('/admin/mapel/{id}', [App\Http\Controllers\AdminMapelController::class, 'destroy'])->name('admin.mapel.destroy');
