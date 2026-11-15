@@ -104,7 +104,7 @@
                                                 <div class="text-xl font-bold text-ink-900 font-heading">{{ $jadwal->jam_ke }}</div>
                                             </div>
                                             <div>
-                                                <h4 class="font-bold text-ink-900">{{ $jadwal->mapel->nama ?? '-' }}</h4>
+                                                <h4 class="font-bold text-ink-900">{{ $jadwal->mapel->nama ?? 'Kokurikuler' }}</h4>
                                                 <p class="text-sm text-ink-500">Kelas {{ $jadwal->rombel->kode ?? '-' }} • {{ substr($jadwal->waktu_mulai, 0, 5) }}</p>
                                             </div>
                                         </div>
@@ -139,11 +139,31 @@
                         @if($jadwalKelas->isNotEmpty())
                             <div class="space-y-3">
                                 @foreach($jadwalKelas as $jadwal)
-                                    @php $sudahMulai = $jadwal->cekloks->isNotEmpty(); @endphp
+                                    @php 
+                                        $sudahMulai = $jadwal->cekloks->isNotEmpty(); 
+                                        
+                                        // 🔴 PERBAIKAN KHUSUS JAM KE-0 (KOKURIKULER 7 KAIH) SESUAI EXCEL 🔴
+                                        if ($jadwal->jam_ke == 0) {
+                                            $namaKegiatan = match($hariIni) {
+                                                'Senin' => 'Kokurikuler (7 KAIH) + Upacara',
+                                                'Selasa' => 'Kokurikuler (7 KAIH): Apel Pagi + Sholat Dhuha',
+                                                'Rabu' => 'Kokurikuler (7 KAIH): Senam + Litnum',
+                                                'Kamis' => 'Kokurikuler (7 KAIH): Apel Pagi + Sholat Dhuha + Kamis Bersih',
+                                                'Jumat' => 'Kokurikuler (7 KAIH): Ziarah + BTQ',
+                                                'Sabtu' => 'Kokurikuler (7 KAIH): Apel Pagi + Sholat Dhuha',
+                                                default => 'Kokurikuler 7 KAIH'
+                                            };
+                                            $namaGuru = 'Guru Piket / Wali Kelas';
+                                        } else {
+                                            $namaKegiatan = $jadwal->mapel->nama ?? 'Kokurikuler';
+                                            $namaGuru = $jadwal->guru->nama ?? '-';
+                                        }
+                                    @endphp
+                                    
                                     <div class="flex items-center justify-between p-4 rounded-sm border {{ $sudahMulai ? 'bg-green-050 border-green-700' : 'bg-white border-line' }}">
                                         <div>
-                                            <h4 class="font-bold text-ink-900">{{ $jadwal->mapel->nama ?? '-' }}</h4>
-                                            <p class="text-sm text-ink-500">{{ $jadwal->guru->nama ?? '-' }} • Jam ke {{ $jadwal->jam_ke }}</p>
+                                            <h4 class="font-bold text-ink-900">{{ $namaKegiatan }}</h4>
+                                            <p class="text-sm text-ink-500">{{ $namaGuru }} • Jam ke {{ $jadwal->jam_ke }}</p>
                                         </div>
                                         <div>
                                             @if($sudahMulai)
