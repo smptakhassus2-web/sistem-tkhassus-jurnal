@@ -10,22 +10,26 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
+
     public function index() {
         $hariIni = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'][Carbon::now()->dayOfWeek];
         $waktuSekarang = Carbon::now()->format('H:i:s');
         $tanggalHariIni = Carbon::today()->format('Y-m-d');
 
-        // 🔴 PERBAIKAN 1: BACA LANGSUNG KOLOM 'status' DARI DATABASE (JANGAN HITUNG ULANG) 🔴
+        // 1. BACA LANGSUNG KOLOM 'status' DARI DATABASE
         $hadir = Ceklok::whereDate('tanggal', $tanggalHariIni)->where('status', 'hadir')->count();
         $terlambat = Ceklok::whereDate('tanggal', $tanggalHariIni)->where('status', 'terlambat')->count();
 
-        // 2. Hitung Alpha (Guru yang punya jadwal, jamnya sudah lewat, tapi BELUM ceklok sama sekali)
-        $guruDenganJadwal = Jadwal::where('hari', $hariIni)->pluck('guru_id')->unique();
-        $alpha = 0;
+        // 2. Hitung Alpha (HANYA GURU ASLI, kecualikan jadwal tanpa guru)
+        // 🔴 PERBAIKAN: whereNotNull('guru_id') ditambahkan
+        $guruDenganJadwal = Jadwal::where('hari', $hariIni)
+            ->whereNotNull('guru_id')
+            ->pluck('guru_id')
+            ->unique();
 
+        $alpha = 0;
         foreach ($guruDenganJadwal as $guruId) {
             $sudahCeklok = Ceklok::where('guru_id', $guruId)->whereDate('tanggal', $tanggalHariIni)->exists();
-            
             if (!$sudahCeklok) {
                 $jamPertama = Jadwal::where('hari', $hariIni)->where('guru_id', $guruId)->min('waktu_mulai');
                 if ($jamPertama && $waktuSekarang > $jamPertama) {
@@ -37,11 +41,12 @@ class DashboardController extends Controller
         // 3. Hitung Persentase Jurnal
         $totalSudahCeklok = Ceklok::whereDate('tanggal', $tanggalHariIni)->count();
         $totalIsiJurnal = \App\Models\JurnalMengajar::whereDate('created_at', $tanggalHariIni)->count();
-        
         $persentaseJurnal = $totalSudahCeklok > 0 ? round(($totalIsiJurnal / $totalSudahCeklok) * 100) : 0;
 
-        // 4. Ambil Data Guru untuk Tabel Peringatan (Yang punya jadwal, jam sudah lewat, belum ceklok)
+        // 4. Tabel Peringatan (HANYA GURU ASLI yang belum ceklok)
+        // 🔴 PERBAIKAN: whereNotNull('guru_id') ditambahkan
         $guruPerluPerhatian = Jadwal::where('hari', $hariIni)
+            ->whereNotNull('guru_id')
             ->where('waktu_mulai', '<=', $waktuSekarang)
             ->whereDoesntHave('cekloks', function($query) use ($tanggalHariIni) {
                 $query->whereDate('tanggal', $tanggalHariIni);
@@ -55,4 +60,5 @@ class DashboardController extends Controller
             'hadir', 'terlambat', 'alpha', 'persentaseJurnal', 'guruPerluPerhatian'
         ));
     }
+
 }

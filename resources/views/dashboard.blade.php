@@ -69,13 +69,26 @@
                     <tbody class="text-ink-700 text-sm">
                         @forelse($guruPerluPerhatian ?? [] as $item)
                         <tr class="border-b border-line hover:bg-green-050 transition">
-                            <td class="py-4 px-6"><div class="font-bold text-ink-900">{{ $item->guru->nama }}</div></td>
-                            <td class="py-4 px-6"><div class="text-sm">{{ $item->mapel->nama ?? 'Mapel' }} / {{ $item->rombel->kode ?? 'Kelas' }}</div></td>
-                            <td class="py-4 px-6"><div class="text-sm font-bold text-ink-900">{{ substr($item->waktu_mulai, 0, 5) }}</div></td>
-                            <td class="py-4 px-6"><span class="bg-red-50 text-red-800 py-1 px-3 rounded-sm text-xs font-bold border border-red-600">🔴 Belum Ceklok</span></td>
+                            {{-- 🔴 DIPERBAIKI: Tambahkan ?? agar tidak error jika guru_id null --}}
+                            <td class="py-4 px-6">
+                                <div class="font-bold text-ink-900">{{ $item->guru->nama ?? 'Kegiatan Umum (Tanpa Guru)' }}</div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="text-sm">{{ $item->mapel->nama ?? 'Umum' }} / {{ $item->rombel->kode ?? 'Semua Kelas' }}</div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <div class="text-sm font-bold text-ink-900">{{ substr($item->waktu_mulai, 0, 5) }}</div>
+                            </td>
+                            <td class="py-4 px-6">
+                                <span class="bg-red-50 text-red-800 py-1 px-3 rounded-sm text-xs font-bold border border-red-600">🔴 Belum Ceklok</span>
+                            </td>
                             <td class="py-4 px-6 text-center">
-                                <a href="https://wa.me/{{ $item->guru->no_hp }}?text=Assalamu'alaikum%20{{ urlencode($item->guru->nama) }},%20mohon%20ceklok%20KBM%20segera." target="_blank" class="inline-block bg-green-700 hover:bg-green-800 text-white py-2 px-3 rounded-sm text-xs font-bold transition shadow-sm">💬 WA</a>
-                                <button type="button" onclick="alert('Fitur Catatan Teguran akan segera ditambahkan!')" class="inline-block bg-gold-500 hover:bg-gold-400 text-green-900 py-2 px-3 rounded-sm text-xs font-bold transition shadow-sm ml-1">📝 Catatan</button>
+                                @if($item->guru)
+                                    <a href="https://wa.me/{{ $item->guru->no_hp ?? '' }}?text=Assalamu'alaikum%20{{ urlencode($item->guru->nama) }},%20mohon%20ceklok%20KBM%20segera." target="_blank" class="inline-block bg-green-700 hover:bg-green-800 text-white py-2 px-3 rounded-sm text-xs font-bold transition shadow-sm">💬 WA</a>
+                                    <button type="button" onclick="alert('Fitur Catatan Teguran akan segera ditambahkan!')" class="inline-block bg-gold-500 hover:bg-gold-400 text-green-900 py-2 px-3 rounded-sm text-xs font-bold transition shadow-sm ml-1">📝 Catatan</button>
+                                @else
+                                    <span class="text-xs text-ink-500 italic">Tidak perlu tindakan</span>
+                                @endif
                             </td>
                         </tr>
                         @empty

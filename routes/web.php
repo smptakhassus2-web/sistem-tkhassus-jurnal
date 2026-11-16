@@ -66,3 +66,17 @@ Route::post('/admin/mapel', [App\Http\Controllers\AdminMapelController::class, '
 Route::get('/admin/mapel/{id}/edit', [App\Http\Controllers\AdminMapelController::class, 'edit'])->name('admin.mapel.edit');
 Route::put('/admin/mapel/{id}', [App\Http\Controllers\AdminMapelController::class, 'update'])->name('admin.mapel.update');
 Route::delete('/admin/mapel/{id}', [App\Http\Controllers\AdminMapelController::class, 'destroy'])->name('admin.mapel.destroy');
+// --- ROUTE MANAJEMEN JADWAL PELAJARAN (ADMIN) ---
+Route::get('/admin/jadwal', [App\Http\Controllers\AdminJadwalController::class, 'index'])->name('admin.jadwal.index');
+Route::get('/admin/jadwal/create', [App\Http\Controllers\AdminJadwalController::class, 'create'])->name('admin.jadwal.create');
+Route::post('/admin/jadwal', [App\Http\Controllers\AdminJadwalController::class, 'store'])->name('admin.jadwal.store');
+Route::get('/admin/jadwal/{id}/edit', [App\Http\Controllers\AdminJadwalController::class, 'edit'])->name('admin.jadwal.edit');
+Route::put('/admin/jadwal/{id}', [App\Http\Controllers\AdminJadwalController::class, 'update'])->name('admin.jadwal.update');
+Route::delete('/admin/jadwal/{id}', [App\Http\Controllers\AdminJadwalController::class, 'destroy'])->name('admin.jadwal.destroy');
+// --- ROUTE MANAJEMEN JADWAL PIKET (ADMIN) ---
+Route::get('/admin/jadwal-piket', [App\Http\Controllers\AdminJadwalPiketController::class, 'index'])->name('admin.jadwal_piket.index');
+Route::get('/admin/jadwal-piket/create', [App\Http\Controllers\AdminJadwalPiketController::class, 'create'])->name('admin.jadwal_piket.create');
+Route::post('/admin/jadwal-piket', [App\Http\Controllers\AdminJadwalPiketController::class, 'store'])->name('admin.jadwal_piket.store');
+Route::get('/admin/jadwal-piket/{id}/edit', [App\Http\Controllers\AdminJadwalPiketController::class, 'edit'])->name('admin.jadwal_piket.edit');
+Route::put('/admin/jadwal-piket/{id}', [App\Http\Controllers\AdminJadwalPiketController::class, 'update'])->name('admin.jadwal_piket.update');
+Route::delete('/admin/jadwal-piket/{id}', [App\Http\Controllers\AdminJadwalPiketController::class, 'destroy'])->name('admin.jadwal_piket.destroy');
