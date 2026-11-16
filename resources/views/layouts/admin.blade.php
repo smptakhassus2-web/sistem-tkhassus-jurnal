@@ -100,11 +100,12 @@
             {{-- ===== AKADEMIK ===== --}}
             <p class="text-[10px] text-gold-500 uppercase font-bold mb-1 mt-4 px-4 tracking-widest">Akademik</p>
 
-            <span class="flex items-center gap-2 px-4 py-2.5 text-sm whitespace-nowrap text-paper-dim opacity-50 cursor-not-allowed">
-                <span class="w-5 text-center flex-shrink-0">📚</span>
-                <span class="flex-1">Mata Pelajaran</span>
-                <span class="text-[9px] bg-red-600 text-white px-1.5 py-0.5 rounded font-bold flex-shrink-0">Segera</span>
-            </span>
+            <a href="{{ route('admin.mapel.index') }}"
+                class="flex items-center gap-2 px-4 py-2.5 text-sm whitespace-nowrap transition
+                       {{ request()->routeIs('admin.mapel.*') ? 'bg-gold-500 text-green-900 font-bold' : 'text-paper-dim hover:bg-green-800 hover:text-white' }}">
+            <span class="w-5 text-center flex-shrink-0">📚</span>
+            <span class="flex-1">Mata Pelajaran</span>
+            </a>
 
             <a href="{{ route('admin.jadwal.index') }}"
                class="flex items-center gap-2 px-4 py-2.5 text-sm whitespace-nowrap transition
