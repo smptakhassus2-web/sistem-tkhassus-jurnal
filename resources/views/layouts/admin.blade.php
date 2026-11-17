@@ -138,11 +138,12 @@
                 <span class="flex-1">Absensi 7 KAIH</span>
             </a>
 
-            <span class="flex items-center gap-2 px-4 py-2.5 text-sm whitespace-nowrap text-paper-dim opacity-50 cursor-not-allowed">
+            <a href="{{ route('admin.tahfidz.index') }}"
+                 class="flex items-center gap-2 px-4 py-2.5 text-sm whitespace-nowrap transition
+                    {{ request()->routeIs('admin.tahfidz.*') ? 'bg-gold-500 text-green-900 font-bold' : 'text-paper-dim hover:bg-green-800 hover:text-white' }}">
                 <span class="w-5 text-center flex-shrink-0">📖</span>
                 <span class="flex-1">Laporan Tahfidz</span>
-                <span class="text-[9px] bg-red-600 text-white px-1.5 py-0.5 rounded font-bold flex-shrink-0">Segera</span>
-            </span>
+            </a>
 
             {{-- ===== LAINNYA ===== --}}
             <p class="text-[10px] text-gold-500 uppercase font-bold mb-1 mt-4 px-4 tracking-widest">Lainnya</p>

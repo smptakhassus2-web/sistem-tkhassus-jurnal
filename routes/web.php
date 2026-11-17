@@ -80,3 +80,17 @@ Route::post('/admin/jadwal-piket', [App\Http\Controllers\AdminJadwalPiketControl
 Route::get('/admin/jadwal-piket/{id}/edit', [App\Http\Controllers\AdminJadwalPiketController::class, 'edit'])->name('admin.jadwal_piket.edit');
 Route::put('/admin/jadwal-piket/{id}', [App\Http\Controllers\AdminJadwalPiketController::class, 'update'])->name('admin.jadwal_piket.update');
 Route::delete('/admin/jadwal-piket/{id}', [App\Http\Controllers\AdminJadwalPiketController::class, 'destroy'])->name('admin.jadwal_piket.destroy');
+// --- ROUTE REKAP ABSENSI 7 KAIH (ADMIN) ---
+Route::get('/admin/absensi-7kaih', [App\Http\Controllers\AdminAbsensi7KaihController::class, 'index'])->name('admin.absensi_7kaih.index');
+// --- ROUTE REKAP JURNAL MENGAJAR (ADMIN) ---
+Route::get('/admin/jurnal-mengajar', [App\Http\Controllers\AdminJurnalMengajarController::class, 'index'])->name('admin.jurnal_mengajar.index');
+Route::get('/admin/jurnal-mengajar/cetak', [App\Http\Controllers\AdminJurnalMengajarController::class, 'cetak'])->name('admin.jurnal_mengajar.cetak');
+// --- ROUTE REKAP PROGRES TAHFIDZ (ADMIN) ---
+Route::get('/admin/tahfidz', [App\Http\Controllers\AdminTahfidzController::class, 'index'])->name('admin.tahfidz.index');
+Route::get('/admin/tahfidz/cetak', [App\Http\Controllers\AdminTahfidzController::class, 'cetak'])->name('admin.tahfidz.cetak');
+// --- ROUTE PORTAL ORANG TUA (WALI MURID) ---
+Route::middleware(['auth'])->group(function () {
+    Route::get('/wali-murid', [App\Http\Controllers\WaliMuridController::class, 'index'])->name('wali_murid.dashboard');
+    Route::get('/wali-murid/absensi/{siswaId}', [App\Http\Controllers\WaliMuridController::class, 'absensiDetail'])->name('wali_murid.absensi_detail');
+    Route::get('/wali-murid/tahfidz/{siswaId}', [App\Http\Controllers\WaliMuridController::class, 'tahfidzDetail'])->name('wali_murid.tahfidz_detail');
+});

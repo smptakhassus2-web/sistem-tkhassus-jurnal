@@ -12,7 +12,7 @@ class User extends Authenticatable
 
     protected $table = 'users';
 
-    // 🔴 KOLOM YANG BISA DIISI MASSAL (SUDAH TERMASUK 'jabatan') 🔴
+    // 🔴 KOLOM YANG BISA DIISI MASSAL
     protected $fillable = [
         'nama',
         'email',
@@ -50,5 +50,13 @@ class User extends Authenticatable
     // Relasi ke Ceklok (Absensi Guru)
     public function cekloks() {
         return $this->hasMany(Ceklok::class, 'guru_id');
+    }
+
+    // 🔴 BARU: Relasi ke Siswa (Untuk Portal Wali Murid)
+    // Menghubungkan User dengan Siswa melalui tabel pivot 'user_siswa'
+    public function siswas() {
+        return $this->belongsToMany(Siswa::class, 'user_siswa', 'user_id', 'siswa_id')
+                    ->withPivot('hubungan') // Mengambil data 'Ayah', 'Ibu', atau 'Wali'
+                    ->withTimestamps();
     }
 }
