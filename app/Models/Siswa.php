@@ -28,4 +28,10 @@ class Siswa extends Model
     {
         return $this->belongsToMany(Rombel::class, 'rombel_siswa');
     }
+        // 🔴 RELASI BARU: Menghubungkan Siswa ke User (Wali) melalui tabel pivot 'user_siswa'
+    public function users() {
+        return $this->belongsToMany(User::class, 'user_siswa', 'siswa_id', 'user_id')
+                    ->withPivot('hubungan')
+                    ->withTimestamps();
+    }
 }

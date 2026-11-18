@@ -3,32 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Absensi7Kaih; // Menggunakan tabel absensi 7 KAIH
-use App\Models\Tahfidz;      // Menggunakan tabel tahfidzs (sesuai view: juz, surat, nilai)
+use App\Models\Absensi7Kaih;
+use App\Models\Tahfidz; // 🔴 PENTING: Menggunakan model Tahfidz, BUKAN ProgresTahfidz
 use Carbon\Carbon;
 
 class WaliController extends Controller
 {
-    // 1. Middleware: Pastikan hanya role 'wali_murid' yang bisa akses
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (auth()->user()->role !== 'wali_murid') {
-                abort(403, 'Akses ditolak. Halaman ini khusus untuk Wali Murid.');
-            }
-            return $next($request);
-        });
-    }
-
-    // 2. Dashboard Utama Wali Murid
     public function index()
     {
+        // 1. Keamanan: Cek role langsung di method (Aman untuk Laravel 13)
+        if (!auth()->check() || auth()->user()->role !== 'wali_murid') {
+            abort(403, 'Akses ditolak. Halaman ini khusus untuk Wali Murid.');
+        }
+
         $user = auth()->user();
 
-        // 🔴 PENTING: View mengharapkan objek tunggal $anak, bukan collection
+        // 2. Ambil data anak (Objek tunggal, sesuai ekspektasi view Bapak)
         $anak = $user->siswas()->with('rombels')->first();
 
-        // Jika tidak ada anak yang terhubung, kirim data kosong agar view tidak error
+        // Jika tidak ada anak terhubung, kembalikan data kosong agar view tidak error
         if (!$anak) {
             return view('wali.dashboard', [
                 'anak' => null,
@@ -40,7 +33,7 @@ class WaliController extends Controller
         $bulanIni = Carbon::now()->month;
         $tahunIni = Carbon::now()->year;
 
-        // 🔴 HITUNG ABSENSI (Mapping ke H, S, I, A sesuai kebutuhan View)
+        // 3. Hitung Absensi 7 KAIH (Mapping ke 'H', 'S', 'I', 'A' sesuai view Bapak)
         $absensiRaw = Absensi7Kaih::where('siswa_id', $anak->id)
             ->whereMonth('tanggal', $bulanIni)
             ->whereYear('tanggal', $tahunIni)
@@ -53,26 +46,14 @@ class WaliController extends Controller
             'A' => $absensiRaw->where('status', 'Alpha')->count(),
         ];
 
-        // 🔴 AMBIL DATA TAHFIDZ TERBARU (Sesuai kolom di view: juz, surat, ayat_awal, ayat_akhir, nilai)
+        // 4. Ambil Data Tahfidz Terbaru (Sesuai kolom di view: juz, surat, ayat_awal, ayat_akhir, nilai)
         $tahfidzTerbaru = Tahfidz::where('siswa_id', $anak->id)
-            ->with('guru') // Untuk memanggil $item->guru->nama di view
+            ->with('guru') // Agar $item->guru->nama di view bisa dipanggil
             ->orderBy('tanggal', 'desc')
             ->limit(5)
             ->get();
 
-        // Kirim variabel yang PERSIS diharapkan oleh dashboard.blade.php
+        // 5. Kirim variabel yang PERSIS diharapkan oleh dashboard.blade.php Bapak
         return view('wali.dashboard', compact('anak', 'absensiBulanIni', 'tahfidzTerbaru'));
-    }
-
-    // 3. (Opsional untuk nanti) Detail Absensi
-    public function absensiDetail($siswaId)
-    {
-        // Akan kita isi setelah dashboard utama berhasil
-    }
-
-    // 4. (Opsional untuk nanti) Detail Tahfidz
-    public function tahfidzDetail($siswaId)
-    {
-        // Akan kita isi setelah dashboard utama berhasil
     }
 }

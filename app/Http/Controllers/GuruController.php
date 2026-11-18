@@ -22,7 +22,8 @@ class GuruController extends Controller
 
         $isPiket = \App\Models\JadwalPiket::where('hari', $hariIni)->where('guru_id', $user->id)->exists();
         $isBtq = \App\Models\KelompokBtq::where('pembina_id', $user->id)->exists();
-        $isTahfidz = str_contains($user->nama, 'Miftahul');
+           // 🔴 PERBAIKAN: Cek berdasarkan role atau tugas pembina, BUKAN nama
+        $isTahfidz = $user->role === 'guru_tahfidz' || $isBtq;
         
         $tasks = [];
         if ($isPiket) $tasks[] = ['tipe' => 'piket', 'judul' => 'Absensi Kegiatan Pagi (Piket)', 'icon' => '🚩'];

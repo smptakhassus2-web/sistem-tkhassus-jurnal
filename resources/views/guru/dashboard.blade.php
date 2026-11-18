@@ -111,5 +111,17 @@
             </div>
         @endif
     </div>
+    {{-- 🔴 TOMBOL INPUT SETORAN HAFALAN (Hanya muncul jika guru punya akses tahfidz) --}}
+@if(auth()->user()->role === 'guru_tahfidz' || auth()->user()->role === 'guru_mapel')
+<div class="bg-paper rounded-sm shadow-md p-6 mb-6 border-l-4 border-gold-500 border border-line flex justify-between items-center">
+    <div>
+        <h3 class="text-lg font-heading font-semibold text-ink-900">📖 Input Setoran Hafalan Siswa</h3>
+        <p class="text-sm text-ink-500 mt-1">Catat progres hafalan, nilai, dan juz yang disetor siswa hari ini.</p>
+    </div>
+    <a href="/tahfidz" class="bg-green-700 hover:bg-green-800 text-paper px-5 py-2.5 rounded-sm text-sm font-bold transition shadow-sm">
+        Buka Menu Setoran &rarr;
+    </a>
+</div>
+@endif
 </body>
 </html>

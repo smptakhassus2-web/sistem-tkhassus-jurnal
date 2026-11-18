@@ -12,19 +12,12 @@ class User extends Authenticatable
 
     protected $table = 'users';
 
-    // 🔴 KOLOM YANG BISA DIISI MASSAL
     protected $fillable = [
-        'nama',
-        'email',
-        'password',
-        'role',
-        'jabatan',
-        'no_hp',
+        'nama', 'email', 'password', 'role', 'jabatan', 'no_hp',
     ];
 
     protected $hidden = [
-        'password',
-        'remember_token',
+        'password', 'remember_token',
     ];
 
     protected function casts(): array
@@ -35,28 +28,25 @@ class User extends Authenticatable
         ];
     }
 
-    // --- RELASI DATABASE ---
-
     // Relasi ke Jadwal Piket
     public function jadwalPikets() {
         return $this->hasMany(JadwalPiket::class, 'guru_id');
     }
 
-    // Relasi ke Kelompok BTQ (Sebagai Pembina)
+    // Relasi ke Kelompok BTQ
     public function kelompokBtqs() {
         return $this->hasMany(KelompokBtq::class, 'pembina_id');
     }
 
-    // Relasi ke Ceklok (Absensi Guru)
+    // Relasi ke Ceklok
     public function cekloks() {
         return $this->hasMany(Ceklok::class, 'guru_id');
     }
 
-    // 🔴 BARU: Relasi ke Siswa (Untuk Portal Wali Murid)
-    // Menghubungkan User dengan Siswa melalui tabel pivot 'user_siswa'
+    // 🔴 RELASI BARU: Menghubungkan User (Wali) ke Siswa melalui tabel pivot 'user_siswa'
     public function siswas() {
         return $this->belongsToMany(Siswa::class, 'user_siswa', 'user_id', 'siswa_id')
-                    ->withPivot('hubungan') // Mengambil data 'Ayah', 'Ibu', atau 'Wali'
+                    ->withPivot('hubungan')
                     ->withTimestamps();
     }
 }
