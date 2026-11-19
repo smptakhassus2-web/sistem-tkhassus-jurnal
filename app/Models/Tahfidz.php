@@ -14,7 +14,8 @@ class Tahfidz extends Model
         'ayat_awal',
         'ayat_akhir',
         'nilai',
-        'tanggal'
+        'tanggal',
+        'catatan',  // 🔴 BARU
     ];
 
     // Relasi ke tabel Siswa

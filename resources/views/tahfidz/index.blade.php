@@ -67,6 +67,17 @@
                             <option value="Lancar">🌟 Lancar</option><option value="Baik">✅ Baik</option><option value="Cukup">⚠️ Cukup</option><option value="Kurang">❌ Kurang</option>
                         </select>
                     </div>
+                    
+                    <!-- 🔴 BARU: Kolom Catatan Pembina -->
+                    <div>
+                        <label class="block text-ink-900 text-sm font-bold mb-2">📝 Catatan Pembina</label>
+                        <textarea name="catatan" rows="3" maxlength="500"
+                                  class="w-full px-4 py-2 border border-line bg-white rounded-sm outline-none focus:ring-2 focus:ring-green-700"
+                                  placeholder="Contoh: Hafalan lancar, perlu murojaah rutin surat Al-Baqarah...">{{ old('catatan') }}</textarea>
+                        <p class="text-xs text-ink-500 mt-1">Opsional. Maksimal 500 karakter.</p>
+                    </div>
+                    <!-- 🔴 AKHIR Kolom Catatan Pembina -->
+
                     <button type="submit" class="w-full bg-gold-500 hover:bg-gold-400 text-green-900 font-bold py-3 rounded-sm transition border border-gold-600">💾 Simpan Setoran</button>
                 </form>
             </div>
@@ -81,6 +92,9 @@
                             <div>
                                 <p class="font-bold text-ink-900">{{ $item->siswa->nama }}</p>
                                 <p class="text-xs text-ink-500">Juz {{ $item->juz }} • {{ $item->surat }} : {{ $item->ayat_awal }}-{{ $item->ayat_akhir }}</p>
+                                @if($item->catatan)
+                                    <p class="text-xs text-ink-700 mt-1 italic bg-white p-2 rounded-sm border border-line">📝 {{ $item->catatan }}</p>
+                                @endif
                             </div>
                             <span class="text-xs font-bold px-2 py-1 rounded-sm {{ $item->nilai == 'Lancar' ? 'bg-green-050 text-green-800 border border-green-700' : ($item->nilai == 'Kurang' ? 'bg-red-50 text-red-700 border border-red-600' : 'bg-gold-500 text-green-900 border border-gold-600') }}">{{ $item->nilai }}</span>
                         </div>
