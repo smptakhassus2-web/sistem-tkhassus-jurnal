@@ -23,10 +23,14 @@ Route::get('/guru', [GuruController::class, 'index'])->middleware('auth')->name(
 Route::post('/guru/ceklok/{jadwalId}', [GuruController::class, 'ceklok'])->middleware('auth');
 Route::get('/guru/jurnal/{ceklokId}', [GuruController::class, 'jurnalForm'])->middleware('auth');
 Route::post('/guru/jurnal/{ceklokId}', [GuruController::class, 'storeJurnal'])->middleware('auth');
-
 // Rute Tahfidz
 Route::get('/tahfidz', [TahfidzController::class, 'index'])->middleware('auth')->name('tahfidz.index');
 Route::post('/tahfidz', [TahfidzController::class, 'store'])->middleware('auth');
+// Route Penilaian BTQ
+Route::get('/btq', [App\Http\Controllers\BtqController::class, 'index'])->middleware('auth')->name('btq.index');
+Route::post('/btq', [App\Http\Controllers\BtqController::class, 'store'])->middleware('auth');
+// Route Cetak Laporan BTQ
+Route::get('/btq/cetak', [App\Http\Controllers\BtqController::class, 'cetak'])->middleware('auth')->name('btq.cetak');
 // Route Portal Wali Murid
 Route::get('/wali', [App\Http\Controllers\WaliController::class, 'index'])->middleware('auth')->name('wali.dashboard');
 // Route Absensi Pagi (7 KAIH, Tahfidz, BTQ)
@@ -51,7 +55,6 @@ Route::post('/admin/siswa', [App\Http\Controllers\AdminSiswaController::class, '
 Route::get('/admin/siswa/{id}/edit', [App\Http\Controllers\AdminSiswaController::class, 'edit'])->name('admin.siswa.edit');
 Route::put('/admin/siswa/{id}', [App\Http\Controllers\AdminSiswaController::class, 'update'])->name('admin.siswa.update');
 Route::delete('/admin/siswa/{id}', [App\Http\Controllers\AdminSiswaController::class, 'destroy'])->name('admin.siswa.destroy');
-
 // --- ROUTE MANAJEMEN KELAS / ROMBEL (ADMIN) ---
 Route::get('/admin/rombel', [App\Http\Controllers\AdminRombelController::class, 'index'])->name('admin.rombel.index');
 Route::get('/admin/rombel/create', [App\Http\Controllers\AdminRombelController::class, 'create'])->name('admin.rombel.create');
@@ -88,9 +91,3 @@ Route::get('/admin/jurnal-mengajar/cetak', [App\Http\Controllers\AdminJurnalMeng
 // --- ROUTE REKAP PROGRES TAHFIDZ (ADMIN) ---
 Route::get('/admin/tahfidz', [App\Http\Controllers\AdminTahfidzController::class, 'index'])->name('admin.tahfidz.index');
 Route::get('/admin/tahfidz/cetak', [App\Http\Controllers\AdminTahfidzController::class, 'cetak'])->name('admin.tahfidz.cetak');
-// --- ROUTE PORTAL ORANG TUA (WALI MURID) ---
-Route::middleware(['auth'])->group(function () {
-    Route::get('/wali-murid', [App\Http\Controllers\WaliMuridController::class, 'index'])->name('wali_murid.dashboard');
-    Route::get('/wali-murid/absensi/{siswaId}', [App\Http\Controllers\WaliMuridController::class, 'absensiDetail'])->name('wali_murid.absensi_detail');
-    Route::get('/wali-murid/tahfidz/{siswaId}', [App\Http\Controllers\WaliMuridController::class, 'tahfidzDetail'])->name('wali_murid.tahfidz_detail');
-});
