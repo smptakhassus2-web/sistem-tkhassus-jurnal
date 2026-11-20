@@ -39,7 +39,10 @@ class LoginController extends Controller
             if ($user->role === 'wali_murid') {
                 return redirect('/wali');
             }
-
+            // 4. Waka masuk ke dashboard monitoring
+            if ($user->role === 'waka') {
+                return redirect('/waka');
+            }
             // 4. Default untuk Guru Mapel biasa (yang bukan Wali Kelas)
             return redirect('/guru');
         }

@@ -91,3 +91,10 @@ Route::get('/admin/jurnal-mengajar/cetak', [App\Http\Controllers\AdminJurnalMeng
 // --- ROUTE REKAP PROGRES TAHFIDZ (ADMIN) ---
 Route::get('/admin/tahfidz', [App\Http\Controllers\AdminTahfidzController::class, 'index'])->name('admin.tahfidz.index');
 Route::get('/admin/tahfidz/cetak', [App\Http\Controllers\AdminTahfidzController::class, 'cetak'])->name('admin.tahfidz.cetak');
+// --- ROUTE REKAP PENILAIAN BTQ (ADMIN) ---
+Route::get('/admin/btq', [App\Http\Controllers\AdminBtqController::class, 'index'])->name('admin.btq.index');
+Route::get('/admin/btq/cetak', [App\Http\Controllers\AdminBtqController::class, 'cetak'])->name('admin.btq.cetak');
+// --- ROUTE DASHBOARD WAKA (MONITORING) ---
+Route::get('/waka', [App\Http\Controllers\WakaController::class, 'index'])
+->name('waka.dashboard')
+->middleware('auth');
