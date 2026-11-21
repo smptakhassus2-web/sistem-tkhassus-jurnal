@@ -85,13 +85,15 @@
                 @csrf
                 <div>
                     <label class="block text-ink-900 text-sm font-bold mb-2">Email</label>
-                    <input type="email" name="email" value="admin@smptaqdua.sch.id" 
+                    <input type="email" name="email" value="{{ old('email') }}" 
+                           placeholder="contoh@email@smptaqdua.sch.id"
                            class="w-full px-4 py-3 border border-line bg-white rounded-sm focus:ring-2 focus:ring-green-700 focus:border-green-700 outline-none transition font-sans" 
                            required>
                 </div>
                 <div>
                     <label class="block text-ink-900 text-sm font-bold mb-2">Password</label>
-                    <input type="password" name="password" value="admin123" 
+                    <input type="password" name="password" 
+                           placeholder="Masukkan password Anda"
                            class="w-full px-4 py-3 border border-line bg-white rounded-sm focus:ring-2 focus:ring-green-700 focus:border-green-700 outline-none transition font-sans" 
                            required>
                 </div>
@@ -100,12 +102,6 @@
                     Masuk ke Sistem
                 </button>
             </form>
-            
-            <div class="mt-6 p-4 bg-paper-dim border border-line rounded-sm">
-                <p class="text-xs text-ink-700 font-bold mb-1">🔑 Akun Demo:</p>
-                <p class="text-xs text-ink-500">Email: admin@smptaqdua.sch.id</p>
-                <p class="text-xs text-ink-500">Password: admin123</p>
-            </div>
         </div>
         
         <!-- Footer -->

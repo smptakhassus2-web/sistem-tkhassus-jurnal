@@ -89,7 +89,7 @@
                                     <div class="text-xs font-bold text-green-800">📗 Juz {{ $item->juz }}</div>
                                     <div class="text-xs text-green-600">{{ $item->surat ?? '-' }} (Ayat {{ $item->ayat_awal ?? '-' }} s/d {{ $item->ayat_akhir ?? '-' }})</div>
                                 @else
-                                    <span class="text-xs text-ink-500 italic">Tidak ada detail materi</span each>
+                                    <span class="text-xs text-ink-500 italic">Tidak ada detail materi</span>
                                 @endif
                             </td>
 
