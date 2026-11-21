@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 11pt;
+            font-size: 10pt;
             color: #000;
             margin: 15px 20px;
             /* 🔴 PENTING: Paksa browser mencetak warna asli kop (hijau), bukan hitam-putih */
@@ -43,9 +43,11 @@
         }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         table, th, td { border: 1px solid #000; }
-        th, td { padding: 6px 8px; text-align: left; vertical-align: top; }
+        th, td { padding: 5px 6px; text-align: left; vertical-align: top; }
         th { background-color: #eef6ee; font-weight: bold; text-align: center; }
         .text-center { text-align: center; }
+        .kehadiran-ringkas { font-weight: bold; }
+        .kehadiran-detail { font-size: 9pt; margin-top: 2px; }
         .tanda-tangan { margin-top: 40px; display: flex; justify-content: space-between; page-break-inside: avoid; }
         .ttd-box { text-align: center; width: 40%; }
         .ttd-space { height: 70px; }
@@ -82,12 +84,13 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 5%;">No</th>
-                <th style="width: 10%;">Waktu</th>
-                <th style="width: 20%;">Guru</th>
-                <th style="width: 15%;">Mapel</th>
-                <th style="width: 10%;">Kelas</th>
-                <th style="width: 25%;">Materi</th>
+                <th style="width: 4%;">No</th>
+                <th style="width: 8%;">Waktu</th>
+                <th style="width: 15%;">Guru</th>
+                <th style="width: 10%;">Mapel</th>
+                <th style="width: 7%;">Kelas</th>
+                <th style="width: 18%;">Materi</th>
+                <th style="width: 23%;">Kehadiran</th>
                 <th style="width: 15%;">Kendala</th>
             </tr>
         </thead>
@@ -100,11 +103,41 @@
                     <td>{{ $jurnal->ceklok->jadwal->mapel->nama ?? '-' }}</td>
                     <td class="text-center">{{ $jurnal->ceklok->jadwal->rombel->kode ?? '-' }}</td>
                     <td>{{ $jurnal->materi ?? '-' }}</td>
+
+                    {{-- 🔴 KOLOM KEHADIRAN SISWA (BARU) --}}
+                    <td>
+                        @php
+                            $absensi = $jurnal->ceklok->absensiSiswa ?? collect();
+                            $h = $absensi->where('status', 'H')->count();
+                            $s = $absensi->where('status', 'S')->count();
+                            $i = $absensi->where('status', 'I')->count();
+                            $a = $absensi->where('status', 'A')->count();
+
+                            $sakitNames = $absensi->where('status', 'S')->pluck('siswa.nama')->filter()->implode(', ');
+                            $izinNames = $absensi->where('status', 'I')->pluck('siswa.nama')->filter()->implode(', ');
+                            $alphaNames = $absensi->where('status', 'A')->pluck('siswa.nama')->filter()->implode(', ');
+                        @endphp
+
+                        <div class="kehadiran-ringkas">
+                            H: {{ $h }} | S: {{ $s }} | I: {{ $i }} | A: {{ $a }}
+                        </div>
+
+                        @if($s > 0 || $i > 0 || $a > 0)
+                            <div class="kehadiran-detail">
+                                @if($s > 0) <div>Sakit: {{ $sakitNames }}</div> @endif
+                                @if($i > 0) <div>Izin: {{ $izinNames }}</div> @endif
+                                @if($a > 0) <div>Alpha: {{ $alphaNames }}</div> @endif
+                            </div>
+                        @else
+                            <div class="kehadiran-detail" style="color: #0a3a20;">Semua hadir</div>
+                        @endif
+                    </td>
+
                     <td>{{ $jurnal->kendala ?? '-' }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="text-center" style="padding: 20px;">Tidak ada data jurnal mengajar pada tanggal ini.</td>
+                    <td colspan="8" class="text-center" style="padding: 20px;">Tidak ada data jurnal mengajar pada tanggal ini.</td>
                 </tr>
             @endforelse
         </tbody>

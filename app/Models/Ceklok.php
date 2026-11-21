@@ -19,4 +19,9 @@ class Ceklok extends Model
     public function guru() {
         return $this->belongsTo(User::class, 'guru_id');
     }
+        // Relasi ke Absensi Siswa (Jembatan untuk mengambil data kehadiran)
+    public function absensiSiswa()
+    {
+        return $this->hasMany(\App\Models\AbsensiSiswa::class);
+    }
 }

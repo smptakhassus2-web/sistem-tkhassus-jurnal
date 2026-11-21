@@ -6,7 +6,7 @@
     {{-- HEADER --}}
     <div class="bg-paper rounded-sm shadow-md p-6 mb-6 border-l-4 border-gold-500 border border-line">
         <h2 class="text-2xl font-heading font-semibold text-ink-900">📝 Rekap Jurnal Mengajar</h2>
-        <p class="text-ink-500 text-sm mt-1">Monitoring jurnal yang diisi guru setelah mengajar (materi, metode, kendala).</p>
+        <p class="text-ink-500 text-sm mt-1">Monitoring jurnal yang diisi guru setelah mengajar (materi, metode, kehadiran, kendala).</p>
     </div>
 
     {{-- KARTU RINGKASAN STATISTIK --}}
@@ -58,6 +58,7 @@
                         <th class="p-4 font-heading font-semibold">Kelas</th>
                         <th class="p-4 font-heading font-semibold">Materi</th>
                         <th class="p-4 font-heading font-semibold">Metode</th>
+                        <th class="p-4 font-heading font-semibold">Kehadiran</th>
                         <th class="p-4 font-heading font-semibold">Kendala</th>
                     </tr>
                 </thead>
@@ -96,6 +97,35 @@
                                 {{ $jurnal->metode ?? '-' }}
                             </td>
 
+                            {{-- 🔴 KOLOM KEHADIRAN SISWA (BARU) --}}
+                            <td class="p-4 text-sm text-ink-700 max-w-xs">
+                                @php
+                                    $absensi = $jurnal->ceklok->absensiSiswa ?? collect();
+                                    $h = $absensi->where('status', 'H')->count();
+                                    $s = $absensi->where('status', 'S')->count();
+                                    $i = $absensi->where('status', 'I')->count();
+                                    $a = $absensi->where('status', 'A')->count();
+                                    
+                                    $sakitNames = $absensi->where('status', 'S')->pluck('siswa.nama')->filter()->implode(', ');
+                                    $izinNames = $absensi->where('status', 'I')->pluck('siswa.nama')->filter()->implode(', ');
+                                    $alphaNames = $absensi->where('status', 'A')->pluck('siswa.nama')->filter()->implode(', ');
+                                @endphp
+                                
+                                <div class="text-xs font-bold mb-1 text-ink-900">
+                                    H: {{ $h }} | S: {{ $s }} | I: {{ $i }} | A: {{ $a }}
+                                </div>
+                                
+                                @if($s > 0 || $i > 0 || $a > 0)
+                                    <div class="text-xs text-ink-500 italic leading-tight space-y-1">
+                                        @if($s > 0) <div>• Sakit: {{ $sakitNames }}</div> @endif
+                                        @if($i > 0) <div>• Izin: {{ $izinNames }}</div> @endif
+                                        @if($a > 0) <div>• Alpha: {{ $alphaNames }}</div> @endif
+                                    </div>
+                                @else
+                                    <span class="text-xs text-green-600 font-medium">Semua hadir</span>
+                                @endif
+                            </td>
+
                             {{-- Kendala --}}
                             <td class="p-4 text-sm text-ink-500 italic">
                                 {{ $jurnal->kendala ?? '-' }}
@@ -103,7 +133,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="p-8 text-center text-ink-500">
+                            <td colspan="8" class="p-8 text-center text-ink-500">
                                 Tidak ada jurnal mengajar untuk tanggal yang dipilih.
                             </td>
                         </tr>
