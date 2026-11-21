@@ -69,7 +69,6 @@
                     <tbody class="text-ink-700 text-sm">
                         @forelse($guruPerluPerhatian ?? [] as $item)
                         <tr class="border-b border-line hover:bg-green-050 transition">
-                            {{-- 🔴 DIPERBAIKI: Tambahkan ?? agar tidak error jika guru_id null --}}
                             <td class="py-4 px-6">
                                 <div class="font-bold text-ink-900">{{ $item->guru->nama ?? 'Kegiatan Umum (Tanpa Guru)' }}</div>
                             </td>
@@ -99,32 +98,35 @@
             </div>
         </div>
 
-        <!-- Menu Cepat -->
+        <!-- Menu Cepat (DIPERBAIKI: Menambahkan Rekap BTQ) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            <a href="/tahfidz" class="bg-paper rounded-sm shadow-md p-6 hover:shadow-lg transition border-l-4 border-green-700 border border-line block">
+            <a href="/admin/tahfidz" class="bg-paper rounded-sm shadow-md p-6 hover:shadow-lg transition border-l-4 border-green-700 border border-line block">
                 <div class="flex items-center">
                     <div class="bg-green-050 p-3 rounded-full mr-4 border border-green-700"><span class="text-2xl">📖</span></div>
                     <div>
-                        <h4 class="font-heading font-semibold text-ink-900">Laporan Tahfidz</h4>
+                        <h4 class="font-heading font-semibold text-ink-900">Rekap Progres Tahfidz</h4>
                         <p class="text-xs text-ink-500">Monitoring setoran hafalan siswa</p>
                     </div>
                 </div>
             </a>
-            <a href="#" class="bg-paper rounded-sm shadow-md p-6 hover:shadow-lg transition border-l-4 border-gold-500 border border-line block">
+            
+            <!-- 🔴 BARU: Menu Rekap Penilaian BTQ -->
+            <a href="/admin/btq" class="bg-paper rounded-sm shadow-md p-6 hover:shadow-lg transition border-l-4 border-blue-600 border border-line block">
                 <div class="flex items-center">
-                    <div class="bg-paper-dim p-3 rounded-full mr-4 border border-gold-500"><span class="text-2xl">🏃</span></div>
+                    <div class="bg-blue-50 p-3 rounded-full mr-4 border border-blue-600"><span class="text-2xl">📗</span></div>
                     <div>
-                        <h4 class="font-heading font-semibold text-ink-900">Monitoring Ekstra</h4>
-                        <p class="text-xs text-ink-500">Jadwal kokurikuler sore hari ini</p>
+                        <h4 class="font-heading font-semibold text-ink-900">Rekap Penilaian BTQ</h4>
+                        <p class="text-xs text-ink-500">Pantau penilaian bacaan Iqro' & Al-Qur'an</p>
                     </div>
                 </div>
             </a>
-            <a href="#" class="bg-paper rounded-sm shadow-md p-6 hover:shadow-lg transition border-l-4 border-green-600 border border-line block">
+
+            <a href="/admin/jurnal-mengajar" class="bg-paper rounded-sm shadow-md p-6 hover:shadow-lg transition border-l-4 border-gold-500 border border-line block">
                 <div class="flex items-center">
-                    <div class="bg-green-050 p-3 rounded-full mr-4 border border-green-600"><span class="text-2xl">📊</span></div>
+                    <div class="bg-paper-dim p-3 rounded-full mr-4 border border-gold-500"><span class="text-2xl">📝</span></div>
                     <div>
-                        <h4 class="font-heading font-semibold text-ink-900">Laporan Periodik</h4>
-                        <p class="text-xs text-ink-500">Rekap mingguan & bulanan</p>
+                        <h4 class="font-heading font-semibold text-ink-900">Rekap Jurnal Mengajar</h4>
+                        <p class="text-xs text-ink-500">Pantau keterisian jurnal guru mapel</p>
                     </div>
                 </div>
             </a>

@@ -109,6 +109,10 @@
                     <h4 class="font-bold text-ink-900 group-hover:text-green-800">📖 Rekap Progres Tahfidz</h4>
                     <p class="text-xs text-ink-500 mt-1">Pantau perkembangan hafalan siswa</p>
                 </a>
+                <a href="/admin/btq" class="block bg-paper-dim hover:bg-green-050 p-4 rounded-sm border border-line transition group">
+                    <h4 class="font-bold text-ink-900 group-hover:text-green-800">📖 Rekap Penilaian BTQ</h4>
+                    <p class="text-xs text-ink-500 mt-1">Pantau penilaian bacaan Iqro' dan Al-Qur'an</p>
+                </a>
             </div>
         </div>
     </div>
