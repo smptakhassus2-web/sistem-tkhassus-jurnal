@@ -6,7 +6,7 @@
     <style>
         body {
             font-family: 'Times New Roman', Times, serif;
-            font-size: 11pt;
+            font-size: 10pt;
             color: #000;
             margin: 15px 20px;
             /* Paksa browser mencetak warna asli (hijau), bukan hitam-putih */
@@ -20,7 +20,7 @@
         .judul-laporan span { font-size: 12pt; text-decoration: none; font-weight: normal; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         table, th, td { border: 1px solid #000; }
-        th, td { padding: 6px 8px; text-align: left; vertical-align: top; }
+        th, td { padding: 5px 6px; text-align: left; vertical-align: top; }
         th { background-color: #eef6ee; font-weight: bold; text-align: center; }
         .text-center { text-align: center; }
         .tanda-tangan { margin-top: 40px; display: flex; justify-content: space-between; page-break-inside: avoid; }
@@ -53,18 +53,22 @@
     <div class="judul-laporan">
         LAPORAN REKAP ABSENSI 7 KAIH<br>
         <span>Tanggal: {{ \Carbon\Carbon::parse($filterTanggal)->isoFormat('dddd, D MMMM Y') }}</span>
+        @if($filterRombel)
+            <br><span>Kelas: {{ \App\Models\Rombel::find($filterRombel)->kode ?? 'Semua Kelas' }}</span>
+        @endif
     </div>
 
     {{-- TABEL DATA --}}
     <table>
         <thead>
             <tr>
-                <th style="width: 5%;">No</th>
-                <th style="width: 15%;">Kegiatan</th>
-                <th style="width: 10%;">Kelas</th>
-                <th style="width: 25%;">Nama Siswa</th>
-                <th style="width: 10%;">Status</th>
-                <th style="width: 35%;">Keterangan</th>
+                <th style="width: 4%;">No</th>
+                <th style="width: 13%;">Kegiatan</th>
+                <th style="width: 8%;">Kelas</th>
+                <th style="width: 22%;">Nama Siswa</th>
+                <th style="width: 8%;">Status</th>
+                <th style="width: 20%;">Input Oleh</th>
+                <th style="width: 25%;">Keterangan</th>
             </tr>
         </thead>
         <tbody>
@@ -75,11 +79,12 @@
                     <td class="text-center">{{ $absensi->rombel->kode ?? '-' }}</td>
                     <td>{{ $absensi->siswa->nama ?? '-' }}</td>
                     <td class="text-center">{{ $absensi->status }}</td>
+                    <td>{{ $absensi->inputOleh->nama ?? '-' }}</td>
                     <td>{{ $absensi->keterangan ?? '-' }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="text-center" style="padding: 20px;">Tidak ada data absensi pada tanggal ini.</td>
+                    <td colspan="7" class="text-center" style="padding: 20px;">Tidak ada data absensi pada tanggal ini.</td>
                 </tr>
             @endforelse
         </tbody>
@@ -89,7 +94,7 @@
     @if($absensis->isNotEmpty())
     <div class="tanda-tangan">
         <div class="ttd-box">
-            <p>Mengetahui,<br>Wali Kelas / Guru Piket</p>
+            <p>Mengetahui,<br>Waka Kesiswaan</p>
             <div class="ttd-space"></div>
             <p class="ttd-name">( ................................... )</p>
         </div>

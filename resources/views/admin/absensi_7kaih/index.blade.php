@@ -51,6 +51,8 @@
             <div class="flex gap-2">
                 <button type="submit" class="bg-green-700 hover:bg-green-800 text-paper px-4 py-2 rounded-sm text-sm font-bold transition">🔍 Tampilkan</button>
                 <a href="{{ route('admin.absensi_7kaih.index') }}" class="bg-paper-dim hover:bg-paper text-ink-900 px-4 py-2 rounded-sm text-sm font-bold transition border border-line">↺ Reset</a>
+                {{-- 🔴 BARU: Tombol Cetak Laporan --}}
+                <button type="button" onclick="cetakLaporan()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-sm text-sm font-bold transition shadow-sm">🖨️ Cetak Laporan</button>
             </div>
         </form>
     </div>
@@ -125,4 +127,15 @@
             </table>
         </div>
     </div>
+
+    {{-- 🔴 BARU: Script untuk Tombol Cetak --}}
+    <script>
+    function cetakLaporan() {
+        const tanggal = document.querySelector('input[name="tanggal"]').value;
+        const rombel = document.querySelector('select[name="rombel_id"]').value;
+        let url = "{{ route('admin.absensi_7kaih.cetak') }}?tanggal=" + tanggal;
+        if(rombel) url += "&rombel_id=" + rombel;
+        window.open(url, '_blank');
+    }
+    </script>
 @endsection

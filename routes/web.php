@@ -114,6 +114,7 @@ Route::middleware('admin.only')->group(function () {
 
 // --- ROUTE REKAP (ADMIN & WAKA BISA AKSES) ---
 Route::get('/admin/absensi-7kaih', [App\Http\Controllers\AdminAbsensi7KaihController::class, 'index'])->name('admin.absensi_7kaih.index');
+Route::get('/admin/absensi-7kaih/cetak', [App\Http\Controllers\AdminAbsensi7KaihController::class, 'cetak'])->name('admin.absensi_7kaih.cetak'); // 🔴 BARIS BARU
 
 Route::get('/admin/jurnal-mengajar', [App\Http\Controllers\AdminJurnalMengajarController::class, 'index'])->name('admin.jurnal_mengajar.index');
 Route::get('/admin/jurnal-mengajar/cetak', [App\Http\Controllers\AdminJurnalMengajarController::class, 'cetak'])->name('admin.jurnal_mengajar.cetak');

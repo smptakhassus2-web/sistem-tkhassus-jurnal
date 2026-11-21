@@ -9,6 +9,7 @@ use Carbon\Carbon;
 
 class AdminAbsensi7KaihController extends Controller
 {
+    // 1. Tampilkan Rekap Absensi 7 KAIH (SUDAH ADA & TIDAK DIUBAH)
     public function index(Request $request) {
         $filterTanggal = $request->input('tanggal', Carbon::today()->format('Y-m-d'));
         $filterRombel = $request->input('rombel_id', '');
@@ -42,5 +43,23 @@ class AdminAbsensi7KaihController extends Controller
             'absensis', 'rombels', 'filterTanggal', 'filterRombel',
             'totalHadir', 'totalSakit', 'totalIzin', 'totalAlpha'
         ));
+    }
+
+    // 🔴 2. BARU: Fungsi untuk Halaman Cetak (Print View)
+    public function cetak(Request $request) {
+        $filterTanggal = $request->input('tanggal', Carbon::today()->format('Y-m-d'));
+        $filterRombel = $request->input('rombel_id', '');
+
+        // Ambil data dengan filter yang sama persis seperti di halaman index
+        $absensis = Absensi7Kaih::with(['siswa', 'rombel', 'inputOleh'])
+            ->where('tanggal', $filterTanggal)
+            ->when($filterRombel, function($q) use ($filterRombel) {
+                $q->where('rombel_id', $filterRombel);
+            })
+            ->orderBy('jenis_kegiatan', 'asc')
+            ->orderBy('siswa_id', 'asc')
+            ->get();
+
+        return view('admin.absensi_7kaih.cetak', compact('absensis', 'filterTanggal', 'filterRombel'));
     }
 }
