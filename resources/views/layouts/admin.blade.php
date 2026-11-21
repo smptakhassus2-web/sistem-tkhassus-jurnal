@@ -145,6 +145,14 @@
                 <span class="flex-1">Laporan Tahfidz</span>
             </a>
 
+            {{-- 🔴 BARU: Menu Jurnal BTQ (Sesuai Permintaan) --}}
+            <a href="{{ route('admin.btq.index') }}"
+                 class="flex items-center gap-2 px-4 py-2.5 text-sm whitespace-nowrap transition
+                    {{ request()->routeIs('admin.btq.*') ? 'bg-gold-500 text-green-900 font-bold' : 'text-paper-dim hover:bg-green-800 hover:text-white' }}">
+                <span class="w-5 text-center flex-shrink-0">📗</span>
+                <span class="flex-1">Jurnal BTQ</span>
+            </a>
+
             {{-- ===== LAINNYA ===== --}}
             <p class="text-[10px] text-gold-500 uppercase font-bold mb-1 mt-4 px-4 tracking-widest">Lainnya</p>
 
